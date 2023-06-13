@@ -15,9 +15,15 @@ func _ready():
 	timer.start()
 
 func enableMovement():
-	speed = 0.05
+	speed = 10
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	translate(Vector3(0., 0., -speed))
+	var position_delta := Vector3(0., delta * (-speed), 0.)
+	var new_position := position + position_delta
+	var Wall := $"../Room/Wall3"
+	var distance :float = Wall.normalVector.dot(new_position - Wall.nominalPoint)
+	print(distance)
+	if(distance >= 0):
+		translate(position_delta)
