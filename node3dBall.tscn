@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://dqxwlr3kl3j1a"]
+
+[ext_resource type="Script" path="res://Node3DBall.gd" id="1_6ehn8"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_p1gll"]
+
+[node name="Node3D" type="Node3D"]
+script = ExtResource("1_6ehn8")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("SphereShape3D_p1gll")
+disabled = true
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="StaticBody3D/CollisionShape3D"]
