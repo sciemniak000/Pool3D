@@ -13,6 +13,7 @@ var balls := []
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	createBall(Vector3(-49., 0., 0.))
+	createBall(Vector3(3., 33., 45.))
 	
 	var timer := Timer.new()
 	add_child(timer)
@@ -31,25 +32,32 @@ func createBall(positioning):
 
 func triggerMovement():
 	balls[0].setMovement(Vector3(-40., 20., 10.))
+	balls[1].setMovement(Vector3(4., 48., 23.))
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	countFuturePositions(delta)
+	findCollisions()
+	processCollisions()
+	proceedToPosition()
+
+func countFuturePositions(delta):
 	for ball in balls:
-		if(ball.isMoving()):
-			countFuturePositions(ball, delta)
-			findCollisions(ball)
-			processCollisions(ball)
-	
+		if ball.isMoving():
+			ball.countNewPosition(delta)
+
+func findCollisions():
 	for ball in balls:
-		if(ball.isMoving()):
+		if ball.isMoving():
+			ball.countWallDistances();
+
+func processCollisions():
+	for ball in balls:
+		if ball.isMoving():
+			ball.processCollisions()
+
+func proceedToPosition():
+	for ball in balls:
+		if ball.isMoving():
 			ball.acceptThePosition()
-
-func countFuturePositions(ball, delta):
-	ball.countNewPosition(delta)
-
-func findCollisions(ball):
-	ball.countWallDistances();
-
-func processCollisions(ball):
-	ball.processCollisions()
