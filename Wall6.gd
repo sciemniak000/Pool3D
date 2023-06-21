@@ -1,12 +1,15 @@
 extends CSGBox3D
 
-var normalVector = Vector3(1.0, 0.0, 0.0)
-var nominalPoint
+var normalVector = Vector3(0.0, 0.0, -1.0)
+var nominalPoint = Vector3(-49., 0., 48.5)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	nominalPoint = position + 0.5 * normalVector
+	print("Wall6:")
+	print("Position: " + str(position) + "; normal vector: " + str(normalVector) + "; nominalPoint: " + str(nominalPoint))
 
+func getDebugId():
+	return "Wall6"
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):

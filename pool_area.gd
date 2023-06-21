@@ -12,34 +12,40 @@ var balls := []
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	var ball1 = ballClass.instantiate()
-	ball1.init(Vector3(-6.5, 0., 0.), [wall1, wall2, wall3, wall4, wall5, wall6])
-	add_child(ball1)
-	balls.append(ball1)
+	createBall(Vector3(-49., 0., 0.))
 	
 	var timer := Timer.new()
 	add_child(timer)
 	
-	timer.wait_time = 3.0
+	timer.wait_time = 1.5
 	timer.one_shot = true
 	timer.connect("timeout", triggerMovement)
 	timer.start()
+	
+
+func createBall(positioning):
+	var ball = ballClass.instantiate()
+	ball.init(positioning, [wall1, wall2, wall3, wall4, wall5, wall6])
+	add_child(ball)
+	balls.append(ball)
 
 func triggerMovement():
-	print(wall1.normalVector)
-	balls[0].setMovement(Vector3(-1., -10., 40.), 
-		[wall3, wall1, wall6])
+	balls[0].setMovement(Vector3(-40., 20., 10.))
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	for ball in balls:
 		if(ball.isMoving()):
-			countNewPositions(ball, delta)
+			countFuturePositions(ball, delta)
 			findCollisions(ball)
 			processCollisions(ball)
+	
+	for ball in balls:
+		if(ball.isMoving()):
+			ball.acceptThePosition()
 
-func countNewPositions(ball, delta):
+func countFuturePositions(ball, delta):
 	ball.countNewPosition(delta)
 
 func findCollisions(ball):

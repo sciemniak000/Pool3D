@@ -5,8 +5,8 @@ var futurePosition
 var inMovement := false
 
 var allWalls
-var wallsGettingNearer := []
-var distancesFromWalls := [-1., -1., -1.]
+var wallsGettingNearer := [null, null, null]
+var distancesFromWalls := [1., 1., 1.]
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -14,19 +14,25 @@ func _ready():
 
 func init(positioning, walls):
 	position = positioning
+	futurePosition = positioning
 	allWalls = walls
 
-func setMovement(newSpeed, walls):
+func setMovement(newSpeed):
 	speed = newSpeed
-	wallsGettingNearer = walls
+	print("Speed set to: " + str(speed))
+	setWallsApproaching()
 	inMovement = true
 
 func countNewPosition(delta):
 	var position_delta := Vector3(delta * speed[0], delta * speed[1], delta * speed[2])
-	futurePosition = position + position_delta
+	print("Calculated position delta to: " + str(position_delta) + " from delta: " + str(delta)
+	+ " and speed: " + str(speed))
+	for i in 3:
+		futurePosition[i] = position[i] + position_delta[i]
+	print("Future position set to: " + str(futurePosition))
 
 func countWallDistances():
-	for i in 3:	
+	for i in 3:
 		distancesFromWalls[i] = countFutureDistanceToWall(wallsGettingNearer[i])
 
 func countFutureDistanceToWall(wall):
@@ -34,15 +40,8 @@ func countFutureDistanceToWall(wall):
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	var position_delta := Vector3(delta * speed[0], delta * speed[1], delta * speed[2])
-	var new_position := position + position_delta
-	var Wall := $"../Room/Wall3"
-	var distance :float = Wall.normalVector.dot(new_position - Wall.nominalPoint)
-	print(distance)
-	if(distance >= 0):
-		translate(position_delta)
-	else:
-		speed = speed * -1 * abs(Wall.normalVector)
+	print("new position: " + str(futurePosition))
+	print(distancesFromWalls)
 
 func isMoving():
 	return inMovement
@@ -50,26 +49,34 @@ func isMoving():
 func processCollisions():
 	for i in 3:
 		if(distancesFromWalls[i] < 0):
-			switchWallOnCollision(i)
-		else:
-			position[i] = futurePosition[i]
+			print("should collide with wall: " + wallsGettingNearer[i].getDebugId() + "; old speed: " + str(speed))
+			speed[i] = -speed[i]
+			print("new speed: " + str(speed))
+			futurePosition[i] = position[i]
+			setWallsApproaching()
 
-func switchWallOnCollision(i):
-	speed[i] = -speed[i]
-	
-	var switchWallPlus
-	var switchWallMinus
-	if(i == 0):
-		switchWallPlus = allWalls[2]
-		switchWallMinus = allWalls[3]
-	elif(i == 1):
-		switchWallPlus = allWalls[1]
-		switchWallMinus = allWalls[0]
+func setWallsApproaching():
+	if(speed[0] >= 0):
+		wallsGettingNearer[0] = allWalls[1]
+		print("Setting first awaiting wall to " + allWalls[0].getDebugId())
 	else:
-		switchWallPlus = allWalls[5]
-		switchWallMinus = allWalls[4]
+		wallsGettingNearer[0] = allWalls[0]
+		print("Setting first awaiting wall to " + allWalls[1].getDebugId())
 	
-	if(speed[i] < 0):
-		wallsGettingNearer[i] = switchWallMinus
+	if(speed[1] >= 0):
+		wallsGettingNearer[1] = allWalls[3]
+		print("Setting second awaiting wall to " + allWalls[3].getDebugId())
 	else:
-		wallsGettingNearer[i] = switchWallPlus
+		wallsGettingNearer[1] = allWalls[2]
+		print("Setting second awaiting wall to " + allWalls[2].getDebugId())
+	
+	if(speed[2] >= 0):
+		wallsGettingNearer[2] = allWalls[5]
+		print("Setting third awaiting wall to " + allWalls[5].getDebugId())
+	else:
+		wallsGettingNearer[2] = allWalls[4]
+		print("Setting third awaiting wall to " + allWalls[4].getDebugId())
+
+func acceptThePosition():
+	for i in 3:
+		position[i] = futurePosition[i]
