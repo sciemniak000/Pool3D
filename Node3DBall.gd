@@ -80,13 +80,13 @@ func acceptThePosition():
 		position[i] = futurePosition[i]
 
 func assignTheSpaceIndices():
-	var iPlus : int = min((position[0] + radius) / 10 + 10, 9)
-	var jPlus : int = min((position[1] + radius) / 10 + 5, 9)
-	var kPlus : int = min((position[2] + radius) / 10 + 5, 9)
+	var iPlus : int = max(min((position[0] + radius) / 10 + 10, 9), 0)
+	var jPlus : int = max(min((position[1] + radius) / 10 + 5, 9), 0)
+	var kPlus : int = max(min((position[2] + radius) / 10 + 5, 9), 0)
 	
-	var iMinus : int = min((position[0] - radius) / 10 + 10, 9)
-	var jMinus : int = min((position[1] - radius) / 10 + 5, 9)
-	var kMinus : int = min((position[2] - radius) / 10 + 5, 9)
+	var iMinus : int = max(min((position[0] - radius) / 10 + 10, 9), 0)
+	var jMinus : int = max(min((position[1] - radius) / 10 + 5, 9), 0)
+	var kMinus : int = max(min((position[2] - radius) / 10 + 5, 9), 0)
 	
 	doubleIndexRegister[0].append(iPlus)
 	if(iPlus != iMinus):

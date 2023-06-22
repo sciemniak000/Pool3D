@@ -52,7 +52,7 @@ func triggerMovement():
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _physics_process(delta):
 	countFuturePositions(delta)
 	findCollisions()
 	processCollisions(delta)

@@ -1,8 +1,9 @@
-[gd_scene load_steps=10 format=3 uid="uid://ci2jpd5qq25r3"]
+[gd_scene load_steps=11 format=3 uid="uid://ci2jpd5qq25r3"]
 
 [ext_resource type="Script" path="res://Wall1.gd" id="1_746u5"]
 [ext_resource type="Script" path="res://pool_area.gd" id="1_e7eqd"]
 [ext_resource type="Script" path="res://Wall2.gd" id="2_anyuo"]
+[ext_resource type="Script" path="res://CameraMovement.gd" id="2_qp5nx"]
 [ext_resource type="Script" path="res://Wall3.gd" id="3_sqhs1"]
 [ext_resource type="Script" path="res://Wall4.gd" id="4_extbp"]
 [ext_resource type="Script" path="res://Wall5.gd" id="5_rrfc0"]
@@ -17,6 +18,7 @@ script = ExtResource("1_e7eqd")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(-2.97631e-08, -0.732377, 0.6809, -3.20132e-08, 0.6809, 0.732377, -1, 2.13163e-14, -4.37114e-08, -0.759638, 48.068, 0)
+script = ExtResource("2_qp5nx")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_8ej7s")
