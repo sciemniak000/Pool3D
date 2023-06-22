@@ -1,2 +1,7 @@
 # Godot 4+ specific ignores
 .godot/
+
+Pool3D.console.exe
+Pool3D.exe
+Pool3D.pck
+export_presets.cfg
