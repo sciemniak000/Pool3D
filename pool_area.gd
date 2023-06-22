@@ -15,7 +15,7 @@ var ballsCollidingRight := []
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	createBall(Vector3(-49., -40., 0.25))
+	createBall(Vector3(-48.63, -40., 0.49))
 	createBall(Vector3(-49., 40., 0.))
 	
 	var timer := Timer.new()
@@ -73,6 +73,7 @@ func processCollisions(delta):
 		var ball1 = ballsCollidingLeft[i]
 		var ball2 = ballsCollidingRight[i]
 		var normalVector = getNormalVector(ball1, ball2)
+		#var normalVector = Vector3(0., 0.7071, -0.7071)
 		print("normal vector calculated to: " + str(normalVector))
 		var collisionSpeed1 = countCollisionSpeed(normalVector, ball1)
 		var collisionSpeed2 = countCollisionSpeed(normalVector, ball2)
@@ -83,8 +84,21 @@ func processCollisions(delta):
 	ballsCollidingRight.clear()
 
 func getNormalVector(ball1, ball2):
-	var pos1 = ball1.position
-	var pos2 = ball2.position
+	var collisionDistance = ball1.radius + ball2.radius
+	var positionDistance = sqrt(pow(ball1.position[0] - ball2.position[0], 2) 
+			+ pow(ball1.position[1] - ball2.position[1], 2)
+			+ pow(ball1.position[2] - ball2.position[2], 2))
+	var futureDistance = sqrt(pow(ball1.futurePosition[0] - ball2.futurePosition[0], 2) 
+			+ pow(ball1.futurePosition[1] - ball2.futurePosition[1], 2)
+			+ pow(ball1.futurePosition[2] - ball2.futurePosition[2], 2))
+	var proportion = (positionDistance - collisionDistance)/(positionDistance - futureDistance)
+	
+	var pos1 = ball1.position + (ball1.futurePosition - ball1.position) * proportion
+	print("Pos1: " + str(pos1))
+	#var pos1 = Vector3(-49., -0.353553, 0.353553)
+	var pos2 = ball2.position + (ball2.futurePosition - ball2.position) * proportion
+	print("Pos2: " + str(pos2))
+	#var pos2 = Vector3(-49., 0.353553, -0.353553)
 	var dif = pos2 - pos1
 	return dif/sqrt(pow(dif[0], 2) + pow(dif[1], 2) + pow(dif[2], 2))
 
