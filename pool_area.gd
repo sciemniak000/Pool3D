@@ -10,13 +10,25 @@ var balls := []
 @onready var wall5 := $Room/Wall5
 @onready var wall6 := $Room/Wall6
 
+var ballsClusters = []
 var ballsCollidingLeft := []
 var ballsCollidingRight := []
+var rng = RandomNumberGenerator.new()
+var amountOfBalls = 1000
+var maxSpeed = 30.0
+
+var debugCounter = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	createBall(Vector3(-48.63, -40., 0.49))
-	createBall(Vector3(-49., 40., 0.))
+	for i in 10:
+		ballsClusters.append([])
+		for j in 10:
+			ballsClusters[i].append([])
+			for k in 10:
+				ballsClusters[i][j].append([])
+	for i in amountOfBalls:
+		createBall(Vector3(rng.randf_range(-1., -97.), rng.randf_range(-48., 48.), rng.randf_range(-48., 48.)))
 	
 	var timer := Timer.new()
 	add_child(timer)
@@ -34,8 +46,9 @@ func createBall(positioning):
 	balls.append(ball)
 
 func triggerMovement():
-	balls[0].setMovement(Vector3(0., 40., 0.))
-	balls[1].setMovement(Vector3(0., -40., 0.))
+	for i in amountOfBalls:
+		balls[i].setMovement(Vector3(rng.randf_range(-maxSpeed, maxSpeed), rng.randf_range(-maxSpeed, maxSpeed)
+				, rng.randf_range(-maxSpeed, maxSpeed)))
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -55,14 +68,17 @@ func findCollisions():
 		if ball.isMoving():
 			ball.countWallDistances();
 	
-	for i in range(balls.size()):
-		for j in range(i + 1, balls.size()):
-			var distance = sqrt(pow(balls[i].futurePosition[0] - balls[j].futurePosition[0], 2) 
-			+ pow(balls[i].futurePosition[1] - balls[j].futurePosition[1], 2)
-			+ pow(balls[i].futurePosition[2] - balls[j].futurePosition[2], 2))
-			if distance <= balls[i].radius + balls[j].radius:
-				ballsCollidingLeft.append(balls[i])
-				ballsCollidingRight.append(balls[j])
+	for i in ballsClusters.size():
+		for j in ballsClusters[i].size():
+			for k in ballsClusters[i][j].size():
+				for x in range(ballsClusters[i][j][k].size()):
+					for y in range(x + 1, ballsClusters[i][j][k].size()):
+						var distance = sqrt(pow(ballsClusters[i][j][k][x].futurePosition[0] - ballsClusters[i][j][k][y].futurePosition[0], 2) 
+						+ pow(ballsClusters[i][j][k][x].futurePosition[1] - ballsClusters[i][j][k][y].futurePosition[1], 2)
+						+ pow(ballsClusters[i][j][k][x].futurePosition[2] - ballsClusters[i][j][k][y].futurePosition[2], 2))
+						if distance <= ballsClusters[i][j][k][x].radius + ballsClusters[i][j][k][y].radius:
+							ballsCollidingLeft.append(ballsClusters[i][j][k][x])
+							ballsCollidingRight.append(ballsClusters[i][j][k][y])
 
 func processCollisions(delta):
 	for ball in balls:
@@ -74,10 +90,8 @@ func processCollisions(delta):
 		var ball2 = ballsCollidingRight[i]
 		var normalVector = getNormalVector(ball1, ball2)
 		#var normalVector = Vector3(0., 0.7071, -0.7071)
-		print("normal vector calculated to: " + str(normalVector))
 		var collisionSpeed1 = countCollisionSpeed(normalVector, ball1)
 		var collisionSpeed2 = countCollisionSpeed(normalVector, ball2)
-		print("collision vectors calculated 1 to: " + str(collisionSpeed1) + "; and 2 to: " + str(collisionSpeed2))
 		processBallsCollision(delta, ball1, ball2, collisionSpeed1, collisionSpeed2)
 	
 	ballsCollidingLeft.clear()
@@ -94,10 +108,8 @@ func getNormalVector(ball1, ball2):
 	var proportion = (positionDistance - collisionDistance)/(positionDistance - futureDistance)
 	
 	var pos1 = ball1.position + (ball1.futurePosition - ball1.position) * proportion
-	print("Pos1: " + str(pos1))
 	#var pos1 = Vector3(-49., -0.353553, 0.353553)
 	var pos2 = ball2.position + (ball2.futurePosition - ball2.position) * proportion
-	print("Pos2: " + str(pos2))
 	#var pos2 = Vector3(-49., 0.353553, -0.353553)
 	var dif = pos2 - pos1
 	return dif/sqrt(pow(dif[0], 2) + pow(dif[1], 2) + pow(dif[2], 2))
@@ -116,6 +128,24 @@ func processBallsCollision(delta, ball1, ball2, collisionSpeed1, collisionSpeed2
 	ball2.setMovement(unimpactedSpeed2 + collisionSpeed1)
 
 func proceedToPosition():
+	for i in 10:
+		for j in 10:
+			for k in 10:
+				ballsClusters[i][j][k].clear()
+	
 	for ball in balls:
 		if ball.isMoving():
 			ball.acceptThePosition()
+			ball.assignTheSpaceIndices()
+			assignTheSpaceIndicesToCluster(ball)
+			
+
+func assignTheSpaceIndicesToCluster(ball):
+	var spaceIndices = ball.doubleIndexRegister
+	for i in spaceIndices[0].size():
+		for j in spaceIndices[1].size():
+			for k in spaceIndices[2].size():
+				ballsClusters[spaceIndices[0][i]][spaceIndices[1][j]][spaceIndices[2][k]].append(ball)
+	spaceIndices[0].clear()
+	spaceIndices[1].clear()
+	spaceIndices[2].clear()

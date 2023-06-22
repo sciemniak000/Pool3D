@@ -8,6 +8,8 @@ var allWalls
 var wallsGettingNearer := [null, null, null]
 var distancesFromWalls := [1., 1., 1.]
 
+var doubleIndexRegister = [[], [], []]
+
 @onready var radiusContainer := $StaticBody3D/CollisionShape3D/CSGSphere3D
 var radius
 
@@ -76,3 +78,24 @@ func setWallsApproaching():
 func acceptThePosition():
 	for i in 3:
 		position[i] = futurePosition[i]
+
+func assignTheSpaceIndices():
+	var iPlus : int = min((position[0] + radius) / 10 + 10, 9)
+	var jPlus : int = min((position[1] + radius) / 10 + 5, 9)
+	var kPlus : int = min((position[2] + radius) / 10 + 5, 9)
+	
+	var iMinus : int = min((position[0] - radius) / 10 + 10, 9)
+	var jMinus : int = min((position[1] - radius) / 10 + 5, 9)
+	var kMinus : int = min((position[2] - radius) / 10 + 5, 9)
+	
+	doubleIndexRegister[0].append(iPlus)
+	if(iPlus != iMinus):
+		doubleIndexRegister[0].append(iMinus)
+	
+	doubleIndexRegister[1].append(jPlus)
+	if(jPlus != jMinus):
+		doubleIndexRegister[1].append(jMinus)
+	
+	doubleIndexRegister[2].append(kPlus)
+	if(kPlus != kMinus):
+		doubleIndexRegister[2].append(kMinus)
