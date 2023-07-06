@@ -46,7 +46,7 @@ func countFutureDistanceToWall(wall):
 	return wall.normalVector.dot(futurePosition - wall.nominalPoint)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _process(_delta):
 	pass
 
 func isMoving():
@@ -80,13 +80,13 @@ func acceptThePosition():
 		position[i] = futurePosition[i]
 
 func assignTheSpaceIndices():
-	var iPlus : int = max(min((position[0] + radius) / 10 + 10, 9), 0)
-	var jPlus : int = max(min((position[1] + radius) / 10 + 5, 9), 0)
-	var kPlus : int = max(min((position[2] + radius) / 10 + 5, 9), 0)
+	var iPlus : int = int(maxf(minf((position[0] + radius) / 10. + 10., 9.), 0.))
+	var jPlus : int = int(maxf(minf((position[1] + radius) / 10. + 5., 9.), 0.))
+	var kPlus : int = int(maxf(minf((position[2] + radius) / 10. + 5., 9.), 0.))
 	
-	var iMinus : int = max(min((position[0] - radius) / 10 + 10, 9), 0)
-	var jMinus : int = max(min((position[1] - radius) / 10 + 5, 9), 0)
-	var kMinus : int = max(min((position[2] - radius) / 10 + 5, 9), 0)
+	var iMinus : int = int(maxf(minf((position[0] - radius) / 10. + 10., 9.), 0.))
+	var jMinus : int = int(maxf(minf((position[1] - radius) / 10. + 5., 9.), 0.))
+	var kMinus : int = int(maxf(minf((position[2] - radius) / 10. + 5., 9.), 0.))
 	
 	doubleIndexRegister[0].append(iPlus)
 	if(iPlus != iMinus):
