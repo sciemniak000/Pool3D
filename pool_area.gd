@@ -14,7 +14,7 @@ var ballsClusters = []
 var ballsCollidingLeft := []
 var ballsCollidingRight := []
 var rng = RandomNumberGenerator.new()
-var amountOfBalls = 1000
+var amountOfBalls = 200
 var maxSpeed = 30.0
 
 var debugCounter = 0

@@ -14,3 +14,4 @@ shape = SubResource("SphereShape3D_p1gll")
 disabled = true
 
 [node name="CSGSphere3D" type="CSGSphere3D" parent="StaticBody3D/CollisionShape3D"]
+radius = 1.5
